@@ -1,0 +1,16 @@
+---
+description: Git workflow and pull request rules for this test task
+alwaysApply: false
+---
+
+- Вся работа — в ветке feature/aqa-homework-repo. В master только
+  initial commit.
+- PR открывается в master и НЕ мёрджится — требование ТЗ.
+- Коммиты атомарные, Conventional Commits, на английском.
+  Один коммит = одна логическая единица, не "init" со всем проектом.
+- git add . не использовать — добавлять файлы явным списком.
+- Не коммитить: .venv/, artifacts/, test-results/, .env, __pycache__/
+- Описание PR обязано содержать: что сделано по сценариям, как
+  запускать локально, как менять окружение, принятые решения
+  с обоснованием, все найденные неточности ТЗ.
+  
