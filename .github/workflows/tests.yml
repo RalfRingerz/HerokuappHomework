@@ -1,0 +1,111 @@
+name: UI tests
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+  workflow_dispatch:
+    inputs:
+      base_url:
+        description: Environment to run against
+        required: false
+        default: https://the-internet.herokuapp.com
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+          cache: pip
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Ruff (static analysis)
+        run: ruff check .
+
+  playwright:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, firefox]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+          cache: pip
+
+      - name: Set up Java (Allure CLI)
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Install Playwright browsers
+        run: playwright install --with-deps ${{ matrix.browser }}
+
+      - name: Install Allure Commandline
+        run: |
+          ALLURE_VERSION=2.32.2
+          curl -fsSL \
+            "https://github.com/allure-framework/allure2/releases/download/${ALLURE_VERSION}/allure-${ALLURE_VERSION}.tgz" \
+            | tar -xz -C /tmp
+          echo "/tmp/allure-${ALLURE_VERSION}/bin" >> "$GITHUB_PATH"
+          /tmp/allure-${ALLURE_VERSION}/bin/allure --version
+
+      - name: Run tests
+        env:
+          BASE_URL: ${{ inputs.base_url || 'https://the-internet.herokuapp.com' }}
+        # Full suite in parallel; @pytest.mark.critical -> Allure severity CRITICAL
+        run: >
+          pytest -n auto
+          --browser ${{ matrix.browser }}
+          --alluredir=allure-results
+
+      - name: Upload failure artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: artifacts-${{ matrix.browser }}
+          path: artifacts/
+          retention-days: 30
+
+      - name: Generate Allure HTML report
+        if: always()
+        run: allure generate allure-results -o allure-report --clean
+
+      - name: Upload Allure results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-results-${{ matrix.browser }}
+          path: allure-results/
+          retention-days: 30
+
+      - name: Upload Allure HTML report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-report-${{ matrix.browser }}
+          path: allure-report/
+          retention-days: 30

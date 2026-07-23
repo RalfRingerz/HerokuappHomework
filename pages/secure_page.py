@@ -9,9 +9,8 @@ from pages.login_page import LoginPage
 
 
 class SecurePage(BasePage):
-    # В ТЗ указан маршрут "/security"; приложение отдаёт страницу по "/secure".
-    # Проверено через Playwright: после успешного входа URL заканчивается на /secure.
-    # Подробнее — README, раздел «Замечания по ТЗ».
+    # В ТЗ указан маршрут "/security"; приложение отдаёт страницу по "/secure" !!!
+    # Подробнее в README, раздел «Замечания по ТЗ»
     path = "/secure"
 
     def __init__(self, page: Page, base_url: str) -> None:
@@ -19,7 +18,7 @@ class SecurePage(BasePage):
         self.heading = page.locator("h2")
         self.subheading = page.locator("h4.subheader")
         self.content = page.locator("#content")
-        # В ТЗ — «Logout button»; фактически это <a>, не <button>.
+        # В ТЗ «Logout button», НО фактически это <a>, не <button> !!!
         self.logout_button = page.get_by_role("link", name="Logout")
         self.flash = page.locator("#flash")
 
@@ -29,3 +28,6 @@ class SecurePage(BasePage):
 
     def flash_message(self) -> str:
         return self.flash.inner_text().replace("×", "").strip()
+
+    def flash_class(self) -> str:
+        return self.flash.get_attribute("class") or ""

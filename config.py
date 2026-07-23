@@ -1,12 +1,12 @@
-"""Runtime configuration.
+"""Конфигурация на время прогонов тестов
 
-Every value can be overridden with an environment variable, so the same suite
-can be pointed at any deployment of the application under test:
+Каждое значение можно переопределить переменной окружения, чтобы один и тот же
+набор тестов можно было запускать против любого деплоя приложения:
 
     BASE_URL=https://staging.example.com pytest
 
-The CLI option ``--base-url`` (provided by pytest-base-url) takes precedence
-over the environment variable; see ``conftest.py``.
+Опция CLI '--base-url' (из pytest-base-url) имеет приоритет над переменной окружения,
+подробнее в 'conftest.py'
 """
 
 from __future__ import annotations
@@ -24,15 +24,15 @@ class Credentials:
 
 
 def get_base_url() -> str:
-    """Base URL of the environment under test, without a trailing slash."""
+    """Base URL окружения под тест без завершающего слэша"""
     return os.getenv("BASE_URL", DEFAULT_BASE_URL).rstrip("/")
 
 
 def get_credentials() -> Credentials:
-    """Valid credentials for the environment under test.
+    """Валидные учётные данные для окружения под тест
 
-    Defaults are the public demo credentials. On a real project these would
-    have no defaults at all and would come from a secret store.
+    По умолчанию это публичные демо-креды. В реальном проекте значений по умолчанию
+    не было бы, они приходили бы из хранилища секретов
     """
     return Credentials(
         username=os.getenv("APP_USERNAME", "tomsmith"),

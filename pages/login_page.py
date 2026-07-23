@@ -12,14 +12,14 @@ class LoginPage(BasePage):
 
     def __init__(self, page: Page, base_url: str) -> None:
         super().__init__(page, base_url)
+        self.heading = page.locator("h2")
         self.username_input = page.locator("#username")
         self.password_input = page.locator("#password")
-        self.submit_button = page.locator("button[type='submit']")
+        self.submit_button = page.get_by_role("button", name="Login")
         self.flash = page.locator("#flash")
 
     def login(self, username: str, password: str) -> None:
         """Заполняет форму и отправляет её.
-
         Намеренно не ждёт конкретного исхода: вызывающий код сам решает,
         ожидается успех или ошибка
         """
@@ -30,3 +30,7 @@ class LoginPage(BasePage):
     def flash_message(self) -> str:
         """Текст flash-баннера без символа закрытия в конце"""
         return self.flash.inner_text().replace("×", "").strip()
+
+    def flash_class(self) -> str:
+        """Значение атрибута class у flash-баннера (например 'flash error')"""
+        return self.flash.get_attribute("class") or ""
