@@ -7,7 +7,7 @@ Page object'ы предоставляют локаторы и действия �
 
 from __future__ import annotations
 
-from playwright.sync_api import Page
+from playwright.sync_api import Locator, Page
 
 
 class BasePage:
@@ -39,3 +39,16 @@ class BasePage:
     @property
     def current_url(self) -> str:
         return self.page.url
+
+class FlashComponents:
+    def __init__(self, flash: Locator) -> None:
+        self.flash = flash
+
+    def flash_message(self) -> str:
+        """Текст flash-баннера без символа закрытия в конце"""
+        return self.flash.inner_text().replace("×", "").strip()
+
+    def flash_class(self) -> str:
+        """Значение атрибута class у flash-баннера (например 'flash error')"""
+        return self.flash.get_attribute("class") or ""
+

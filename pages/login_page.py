@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from playwright.sync_api import Page
 
-from pages.base_page import BasePage
+from pages.base_page import BasePage, FlashComponents
 
 
 class LoginPage(BasePage):
@@ -12,11 +12,12 @@ class LoginPage(BasePage):
 
     def __init__(self, page: Page, base_url: str) -> None:
         super().__init__(page, base_url)
+        self.flash = page.locator("#flash")
+        self.flash_components = FlashComponents(self.flash)
         self.heading = page.locator("h2")
         self.username_input = page.locator("#username")
         self.password_input = page.locator("#password")
         self.submit_button = page.get_by_role("button", name="Login")
-        self.flash = page.locator("#flash")
 
     def login(self, username: str, password: str) -> None:
         """Заполняет форму и отправляет её.
@@ -29,8 +30,4 @@ class LoginPage(BasePage):
 
     def flash_message(self) -> str:
         """Текст flash-баннера без символа закрытия в конце"""
-        return self.flash.inner_text().replace("×", "").strip()
-
-    def flash_class(self) -> str:
-        """Значение атрибута class у flash-баннера (например 'flash error')"""
-        return self.flash.get_attribute("class") or ""
+        return self.flash_components.flash_message()

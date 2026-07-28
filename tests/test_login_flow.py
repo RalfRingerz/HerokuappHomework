@@ -46,8 +46,8 @@ def test_login_with_valid_credentials_reaches_secure_area(
     # Шаг 3 — пользователь на защищённом маршруте
     expect(page).to_have_url(secure_page.url)
     expect(secure_page.flash).to_contain_text(LOGIN_SUCCESS_MESSAGE)
-    expect(secure_page.flash).to_have_class("flash success")
-    assert secure_page.flash_message() == LOGIN_SUCCESS_MESSAGE
+    expect(secure_page.flash_components.flash).to_have_class("flash success")
+    assert secure_page.flash_components.flash_message() == LOGIN_SUCCESS_MESSAGE
 
     # Шаг 4 — заголовок и содержимое
     expect(page).to_have_title(EXPECTED_TITLE)
@@ -88,7 +88,7 @@ def test_logout_returns_user_to_login_page(secure_page: SecurePage, page) -> Non
 
     expect(page).to_have_url(login_page.url)
     expect(login_page.flash).to_contain_text(LOGOUT_SUCCESS_MESSAGE)
-    assert login_page.flash_message() == LOGOUT_SUCCESS_MESSAGE
+    assert login_page.flash_components.flash_message() == LOGOUT_SUCCESS_MESSAGE
     expect(login_page.submit_button).to_be_visible()
 
     session_after = _session_cookie(page)
