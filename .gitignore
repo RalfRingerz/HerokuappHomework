@@ -5,7 +5,20 @@ venv/
 .pytest_cache/
 artifacts/
 test-results/
+allure-results/
+allure-report/
 .env
 .idea/
 .vscode/
 .DS_Store
+
+# MCP / browser exploration dumps
+.playwright-mcp/
+*-snapshot.yml
+
+# Tool caches
+.ruff_cache/
+.mypy_cache/
+
+# Playwright native reports
+blob-report/

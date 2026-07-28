@@ -1,0 +1,35 @@
+---
+description: Test code conventions for Playwright + pytest
+globs: pages/**/*.py,tests/**/*.py,conftest.py,config.py
+alwaysApply: false
+---
+
+# Architecture
+- Page Object содержит только локаторы и действия. Assert'ов в pages/
+  нет — все проверки живут в тестах.
+- Фикстуры pytest-playwright (page, context, browser) не
+  переопределять, только надстраивать сверху.
+- Тесты независимы, проходят в любом порядке, без разделяемого
+  состояния.
+
+# Waiting
+- Запрещены wait_for_timeout, time.sleep и любые фиксированные паузы.
+- Проверки состояния UI — только через expect() с ретраями. Голый
+  assert допустим лишь для чистых Python-значений.
+
+# Locators
+- Приоритет: get_by_role > get_by_label > get_by_alt_text > get_by_text.
+- CSS — только если семантического локатора нет. XPath — стараться избегать.
+
+# Data
+- URL и креды в тестах не хардкодить: только config.py и фикстуры.
+  Это касается и таблиц parametrize.
+- Магические числа и строки — именованные константы в одном месте.
+- Ожидаемые значения не подгонять под фактические молча: расхождение
+  с ТЗ фиксируется в README, раздел "Notes on the spec".
+
+# Style
+- PEP 8, ruff, line-length 88, type hints в сигнатурах.
+- Докстринг у каждого теста — одна строка, формулирует проверяемое
+  требование.
+- Параметризованные кейсы — с осмысленным id.
