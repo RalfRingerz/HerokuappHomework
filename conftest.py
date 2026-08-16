@@ -14,6 +14,8 @@ from config import Credentials, get_base_url, get_credentials
 from pages.login_page import LoginPage
 from pages.main_page import MainPage
 from pages.secure_page import SecurePage
+from pages.hovers_page import HoversPage
+from pages.dynamic_controls_page import DynamicControlsPage
 
 
 @pytest.hookimpl(tryfirst=True)
@@ -96,3 +98,15 @@ def secure_page(
     """
     login_page.login(credentials.username, credentials.password)
     return SecurePage(page, base_url)
+
+
+@pytest.fixture
+def hovers_page(page: Page, base_url: str) -> HoversPage:
+    """Страница с ховерами"""
+    return HoversPage(page, base_url).open()
+
+
+@pytest.fixture
+def dynamic_controls_page(page: Page, base_url: str) -> DynamicControlsPage:
+    """Страница с динамическими кнопками"""
+    return DynamicControlsPage(page, base_url).open()
