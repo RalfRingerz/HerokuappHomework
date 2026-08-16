@@ -46,6 +46,24 @@
 - Logout
 - Assert user logged out
 
+### Scenario 4 — Hovers Page
+
+- Verify initial page state and three avatars
+- Verify user captions are hidden initially
+- Hover over User 1 and verify name and profile link
+- Hover over User 2 and verify name and profile link
+- Hover over User 3 and verify name and profile link
+- Verify caption switching between avatars
+
+### Scenario 5 — Dynamic Controls Page
+
+- Verify initial state of all controls
+- Check and uncheck the checkbox
+- Remove the checkbox and verify loading and message
+- Add the checkbox and verify its restored state
+- Enable and fill the text input
+- Disable the text input and verify its value is preserved
+
 ## Additional Details
 
 While working on automation, please use:
