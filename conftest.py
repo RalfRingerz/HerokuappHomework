@@ -11,11 +11,11 @@ import pytest
 from playwright.sync_api import Page
 
 from config import Credentials, get_base_url, get_credentials
+from pages.dynamic_controls_page import DynamicControlsPage
+from pages.hovers_page import HoversPage
 from pages.login_page import LoginPage
 from pages.main_page import MainPage
 from pages.secure_page import SecurePage
-from pages.hovers_page import HoversPage
-from pages.dynamic_controls_page import DynamicControlsPage
 
 
 @pytest.hookimpl(tryfirst=True)

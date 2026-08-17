@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from playwright.sync_api import Page, Locator
+from playwright.sync_api import Locator, Page
 
 from pages.base_page import BasePage
 
