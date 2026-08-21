@@ -40,6 +40,7 @@ class BasePage:
     def current_url(self) -> str:
         return self.page.url
 
+
 class FlashComponents:
     def __init__(self, flash: Locator) -> None:
         self.flash = flash
