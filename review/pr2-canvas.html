@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PR #2 - дашборд ревью</title>
+  <style>
+    :root {
+      --bg: #f4f1ea;
+      --paper: #fffdf8;
+      --ink: #1c1915;
+      --muted: #5c564c;
+      --line: #e4ddd1;
+      --ok: #1b5e20;
+      --ok-bg: #e8f5e9;
+      --warn: #e65100;
+      --warn-bg: #fff3e0;
+      --info: #0d47a1;
+      --accent: #0f3d2e;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font: 16px/1.55 "Iowan Old Style", "Palatino Linotype", Palatino, "Times New Roman", serif;
+      color: var(--ink);
+      background: var(--bg);
+    }
+
+    .bar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      padding: 12px 24px;
+      background: var(--accent);
+      color: #f4f1ea;
+    }
+    .bar a {
+      color: inherit;
+      text-decoration: none;
+      border: 1px solid rgba(255,255,255,.35);
+      padding: 8px 12px;
+      border-radius: 6px;
+      font: 13px/1.2 ui-sans-serif, system-ui, sans-serif;
+    }
+    .bar a.primary {
+      background: #fffdf8;
+      color: var(--accent);
+      border-color: #fffdf8;
+      font-weight: 650;
+    }
+    .bar span {
+      font: 13px/1.2 ui-sans-serif, system-ui, sans-serif;
+      opacity: .85;
+    }
+
+    .wrap {
+      max-width: 880px;
+      margin: 0 auto;
+      padding: 28px 20px 64px;
+    }
+
+    h1, h2, h3 {
+      font-family: ui-sans-serif, system-ui, sans-serif;
+      letter-spacing: -.02em;
+      line-height: 1.2;
+    }
+    h1 { font-size: 28px; margin: 0 0 8px; }
+    h2 { font-size: 20px; margin: 36px 0 12px; }
+    h3 { font-size: 17px; margin: 0 0 8px; }
+    p { margin: 0 0 12px; }
+    .lead { color: var(--muted); font-size: 15px; }
+
+    .pills { display: flex; gap: 8px; flex-wrap: wrap; margin: 14px 0 18px; }
+    .pill {
+      font: 12px/1 ui-sans-serif, system-ui, sans-serif;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: var(--ok-bg);
+      color: var(--ok);
+    }
+    .pill.warn { background: var(--warn-bg); color: var(--warn); }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin: 16px 0 20px;
+    }
+    .stat {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 12px;
+    }
+    .stat b {
+      display: block;
+      font: 650 22px/1.1 ui-sans-serif, system-ui, sans-serif;
+    }
+    .stat span {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font: 12px/1.3 ui-sans-serif, system-ui, sans-serif;
+    }
+
+    .callout {
+      background: var(--ok-bg);
+      border-left: 4px solid var(--ok);
+      padding: 12px 14px;
+      border-radius: 0 8px 8px 0;
+      margin: 0 0 22px;
+    }
+    .callout strong {
+      display: block;
+      font-family: ui-sans-serif, system-ui, sans-serif;
+      margin-bottom: 6px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--paper);
+      font: 14px/1.4 ui-sans-serif, system-ui, sans-serif;
+    }
+    th, td {
+      text-align: left;
+      padding: 8px 10px;
+      border-bottom: 1px solid var(--line);
+      vertical-align: top;
+    }
+    th { color: var(--muted); font-weight: 600; }
+    .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 8px; }
+    .dot.ok { background: var(--ok); }
+    .dot.warn { background: var(--warn); }
+    .dot.info { background: var(--info); }
+    .dot.neutral { background: #9e9588; }
+
+    .cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .card {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 14px;
+    }
+    .muted { color: var(--muted); }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: .9em;
+      background: #ece7dc;
+      padding: .1em .35em;
+      border-radius: 4px;
+    }
+
+    @media (max-width: 720px) {
+      .stats, .cards { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 520px) {
+      .stats, .cards { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="bar">
+    <span>Дашборд PR #2 · vapavlenko → master</span>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <a class="primary" href="pr2-feedback.html">Письмо с отзывом</a>
+      <a href="https://github.com/RalfRingerz/HerokuappHomework/pull/2">PR на GitHub</a>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <h1>PR #2 - ревью Hovers и Dynamic Controls</h1>
+    <p class="lead">HEAD 1a0f81f · CI: lint, chromium, firefox зелёные</p>
+    <div class="pills">
+      <span class="pill">Задание выполнено</span>
+      <span class="pill">PR в master</span>
+      <span class="pill">CI green</span>
+      <span class="pill warn">Принять с замечаниями</span>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><b>Да</b><span>Наследование BasePage</span></div>
+      <div class="stat"><b>6 / 6</b><span>Тест-функций на страницу</span></div>
+      <div class="stat"><b>10 и 8</b><span>Собранных тестов Hovers / DC</span></div>
+      <div class="stat"><b>3 / 3</b><span>CI jobs на HEAD</span></div>
+    </div>
+
+    <div class="callout">
+      <strong>Вердикт</strong>
+      Формальные требования закрыты: Page Object от BasePage, фикстуры в том же стиле,
+      по тест-кейсу на страницу, от 5 тестов, PR в master со всем кодом.
+      Блокирующих дефектов нет. Ниже замечания по конвенциям репозитория и пробелам покрытия.
+    </div>
+
+    <h2>Чеклист задания</h2>
+    <table>
+      <thead>
+        <tr><th>Требование</th><th>Статус</th><th>Где видно</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><span class="dot ok"></span>Изучить фреймворк (POM, fixtures, expect)</td><td>Сделано</td><td><code>pages/*</code>, <code>tests/*</code>, <code>conftest.py</code></td></tr>
+        <tr><td><span class="dot ok"></span>Наследоваться от BasePage</td><td>Сделано</td><td>HoversPage, DynamicControlsPage</td></tr>
+        <tr><td><span class="dot ok"></span>1 тест-кейс на страницу</td><td>Сделано</td><td>docs/test-task.md Scenario 4 и 5</td></tr>
+        <tr><td><span class="dot ok"></span>От 5 тестов на страницу</td><td>Сделано</td><td>6 функций / 10 и 8 collected</td></tr>
+        <tr><td><span class="dot ok"></span>PR со всеми изменениями в master</td><td>Сделано</td><td>pull/2, mergeable</td></tr>
+        <tr><td><span class="dot ok"></span>Линтер после первого комментария</td><td>Исправлено</td><td>commit style: fix linting issues</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Что сделано хорошо</h2>
+    <div class="cards">
+      <div class="card">
+        <h3>Архитектура как в master</h3>
+        <p>path и open(), фикстуры уже открывают страницу, assert только в тестах, parametrize с id, expect() для UI, без sleep.</p>
+      </div>
+      <div class="card">
+        <h3>Сильные проверки</h3>
+        <p>Hovers: hidden до hover, только активная карточка, unhover. Dynamic Controls: лоадер, disabled кнопки, сохранение текста в input после Disable.</p>
+      </div>
+    </div>
+
+    <h2>Замечания для правки</h2>
+    <table>
+      <thead>
+        <tr><th>Приоритет</th><th>Файл</th><th>Проблема</th><th>Зачем править</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><span class="dot warn"></span>Средний</td><td>dynamic_controls_page.py</td><td>wait_for(visible/hidden) и #loading:visible</td><td>В проекте UI-состояние ждут через expect(); промежуточный spinner может флаковать</td></tr>
+        <tr><td><span class="dot warn"></span>Средний</td><td>test_hovers.py</td><td>Нет реального switch hover 0 на 1</td><td>Свой же Scenario 4: caption switching</td></tr>
+        <tr><td><span class="dot warn"></span>Средний</td><td>conftest.py</td><td>_page_from_item без новых POM</td><td>Скриншот Allure на critical не сработает</td></tr>
+        <tr><td><span class="dot info"></span>Низкий</td><td>оба POM</td><td>Магические строки, CSS .figure</td><td>Конвенция 10-python-playwright.mdc</td></tr>
+        <tr><td><span class="dot info"></span>Низкий</td><td>README.md</td><td>Покрытие и /users/N = 404 не описаны</td><td>Как в master для расхождений с ТЗ</td></tr>
+        <tr><td><span class="dot neutral"></span>Низкий</td><td>оба test_*.py</td><td>hidded в имени теста; у value нет type hint</td><td>Единообразие с остальными тестами</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Покрытие по страницам</h2>
+    <div class="cards">
+      <div class="card">
+        <h3>Hovers <span class="muted">10 collected</span></h3>
+        <p>Есть: 3 аватара, caption hidden/visible, href, unhover, URL профиля.</p>
+        <p class="muted">Нет: смена hover между карточками, картинки, 404 на /users/N, ссылка с главной.</p>
+      </div>
+      <div class="card">
+        <h3>Dynamic Controls <span class="muted">8 collected</span></h3>
+        <p>Есть: init, check/uncheck, remove, add, enable с fill, disable с value.</p>
+        <p class="muted">Нет: ввод в disabled input, независимость секций, enabled кнопки после Add.</p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
