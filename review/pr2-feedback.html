@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Обратная связь по PR #2</title>
+  <style>
+    :root {
+      --bg: #f4f1ea;
+      --paper: #fffdf8;
+      --ink: #1c1915;
+      --muted: #5c564c;
+      --line: #e4ddd1;
+      --ok: #1b5e20;
+      --ok-bg: #e8f5e9;
+      --warn: #e65100;
+      --warn-bg: #fff3e0;
+      --info: #0d47a1;
+      --code-bg: #1e1c18;
+      --code-ink: #f3efe6;
+      --accent: #0f3d2e;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font: 16px/1.55 "Iowan Old Style", "Palatino Linotype", Palatino, "Times New Roman", serif;
+      color: var(--ink);
+      background: var(--bg);
+    }
+
+    .bar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      padding: 12px 24px;
+      background: var(--accent);
+      color: #f4f1ea;
+    }
+    .bar a {
+      color: inherit;
+      text-decoration: none;
+      border: 1px solid rgba(255,255,255,.35);
+      padding: 8px 12px;
+      border-radius: 6px;
+      font: 13px/1.2 ui-sans-serif, system-ui, sans-serif;
+    }
+    .bar a.primary {
+      background: #fffdf8;
+      color: var(--accent);
+      border-color: #fffdf8;
+      font-weight: 650;
+    }
+    .bar span {
+      font: 13px/1.2 ui-sans-serif, system-ui, sans-serif;
+      opacity: .85;
+    }
+
+    .wrap {
+      max-width: 880px;
+      margin: 0 auto;
+      padding: 28px 20px 64px;
+    }
+
+    h1, h2, h3 {
+      font-family: ui-sans-serif, system-ui, sans-serif;
+      letter-spacing: -.02em;
+      line-height: 1.2;
+    }
+    h1 { font-size: 28px; margin: 0 0 8px; }
+    h2 { font-size: 20px; margin: 36px 0 12px; }
+    h3 { font-size: 17px; margin: 28px 0 10px; }
+    p { margin: 0 0 12px; }
+    .lead { color: var(--muted); font-size: 15px; }
+
+    .pills { display: flex; gap: 8px; flex-wrap: wrap; margin: 14px 0 18px; }
+    .pill {
+      font: 12px/1 ui-sans-serif, system-ui, sans-serif;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: var(--ok-bg);
+      color: var(--ok);
+    }
+    .pill.warn { background: var(--warn-bg); color: var(--warn); }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin: 16px 0 20px;
+    }
+    .stat {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 12px;
+    }
+    .stat b {
+      display: block;
+      font: 650 22px/1.1 ui-sans-serif, system-ui, sans-serif;
+    }
+    .stat span {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font: 12px/1.3 ui-sans-serif, system-ui, sans-serif;
+    }
+
+    .callout {
+      background: var(--ok-bg);
+      border-left: 4px solid var(--ok);
+      padding: 12px 14px;
+      border-radius: 0 8px 8px 0;
+      margin: 0 0 22px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--paper);
+      font: 14px/1.4 ui-sans-serif, system-ui, sans-serif;
+    }
+    th, td {
+      text-align: left;
+      padding: 8px 10px;
+      border-bottom: 1px solid var(--line);
+      vertical-align: top;
+    }
+    th { color: var(--muted); font-weight: 600; }
+    .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 8px; }
+    .dot.ok { background: var(--ok); }
+    .dot.warn { background: var(--warn); }
+    .dot.info { background: var(--info); }
+    .dot.neutral { background: #9e9588; }
+
+    .cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .card {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 14px;
+    }
+    .card h3 { margin: 0 0 8px; }
+    .muted { color: var(--muted); }
+
+    .diagram {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 12px;
+      margin: 14px 0 20px;
+      overflow-x: auto;
+    }
+
+    pre {
+      background: var(--code-bg);
+      color: var(--code-ink);
+      padding: 14px 16px;
+      border-radius: 10px;
+      overflow-x: auto;
+      font: 13px/1.45 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: .9em;
+      background: #ece7dc;
+      padding: .1em .35em;
+      border-radius: 4px;
+    }
+    pre code { background: none; padding: 0; color: inherit; font-size: 13px; }
+
+    ul { margin: 0 0 14px; padding-left: 1.2em; }
+    li { margin: 0 0 8px; }
+    a { color: var(--accent); }
+
+    .letter {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 28px 28px 20px;
+      margin-top: 28px;
+    }
+
+    @media (max-width: 720px) {
+      .stats, .cards { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 520px) {
+      .stats, .cards { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="bar">
+    <span>Обратная связь по PR #2 · vapavlenko → master</span>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <a class="primary" href="pr2-hovers-dynamic-controls-review.canvas.tsx">Открыть канвас</a>
+      <a href="https://github.com/RalfRingerz/HerokuappHomework/pull/2">PR на GitHub</a>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <h1>PR #2 - ревью Hovers и Dynamic Controls</h1>
+    <p class="lead">HEAD 1a0f81f · CI: lint, chromium, firefox зелёные</p>
+    <div class="pills">
+      <span class="pill">Задание выполнено</span>
+      <span class="pill">PR в master</span>
+      <span class="pill">CI green</span>
+      <span class="pill warn">Принять с замечаниями</span>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><b>Да</b><span>Наследование BasePage</span></div>
+      <div class="stat"><b>6 / 6</b><span>Тест-функций на страницу</span></div>
+      <div class="stat"><b>10 и 8</b><span>Собранных тестов Hovers / DC</span></div>
+      <div class="stat"><b>3 / 3</b><span>CI jobs на HEAD</span></div>
+    </div>
+
+    <div class="callout">
+      Формальные требования закрыты: Page Object от BasePage, фикстуры в том же стиле,
+      по тест-кейсу на страницу, от 5 тестов, PR в master со всем кодом.
+      Блокирующих дефектов нет. Ниже замечания по конвенциям репозитория и пробелам покрытия.
+    </div>
+
+    <h2>Чеклист задания</h2>
+    <table>
+      <thead>
+        <tr><th>Требование</th><th>Статус</th><th>Где видно</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><span class="dot ok"></span>Изучить фреймворк (POM, fixtures, expect)</td><td>Сделано</td><td><code>pages/*</code>, <code>tests/*</code>, <code>conftest.py</code></td></tr>
+        <tr><td><span class="dot ok"></span>Наследоваться от BasePage</td><td>Сделано</td><td>HoversPage, DynamicControlsPage</td></tr>
+        <tr><td><span class="dot ok"></span>1 тест-кейс на страницу</td><td>Сделано</td><td>docs/test-task.md Scenario 4 и 5</td></tr>
+        <tr><td><span class="dot ok"></span>От 5 тестов на страницу</td><td>Сделано</td><td>6 функций / 10 и 8 collected</td></tr>
+        <tr><td><span class="dot ok"></span>PR со всеми изменениями в master</td><td>Сделано</td><td>pull/2, mergeable</td></tr>
+        <tr><td><span class="dot ok"></span>Линтер после первого комментария</td><td>Исправлено</td><td>commit style: fix linting issues</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Замечания для правки</h2>
+    <table>
+      <thead>
+        <tr><th>Приоритет</th><th>Файл</th><th>Проблема</th><th>Зачем править</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><span class="dot warn"></span>Средний</td><td>dynamic_controls_page.py</td><td>wait_for(visible/hidden) и #loading:visible</td><td>В проекте UI-состояние ждут через expect(); промежуточный spinner может флаковать</td></tr>
+        <tr><td><span class="dot warn"></span>Средний</td><td>test_hovers.py</td><td>Нет реального switch hover 0 на 1</td><td>Свой же Scenario 4: caption switching</td></tr>
+        <tr><td><span class="dot warn"></span>Средний</td><td>conftest.py</td><td>_page_from_item без новых POM</td><td>Скриншот Allure на critical не сработает</td></tr>
+        <tr><td><span class="dot info"></span>Низкий</td><td>оба POM</td><td>Магические строки, CSS .figure</td><td>Конвенция 10-python-playwright.mdc</td></tr>
+        <tr><td><span class="dot info"></span>Низкий</td><td>README.md</td><td>Покрытие и /users/N = 404 не описаны</td><td>Как в master для расхождений с ТЗ</td></tr>
+        <tr><td><span class="dot neutral"></span>Низкий</td><td>оба test_*.py</td><td>hidded в имени теста; у value нет type hint</td><td>Единообразие с остальными тестами</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Покрытие по страницам</h2>
+    <div class="cards">
+      <div class="card">
+        <h3>Hovers <span class="muted">10 collected</span></h3>
+        <p>Есть: 3 аватара, caption hidden/visible, href, unhover, URL профиля.</p>
+        <p class="muted">Нет: смена hover между карточками, картинки, 404 на /users/N, ссылка с главной.</p>
+      </div>
+      <div class="card">
+        <h3>Dynamic Controls <span class="muted">8 collected</span></h3>
+        <p>Есть: init, check/uncheck, remove, add, enable с fill, disable с value.</p>
+        <p class="muted">Нет: ввод в disabled input, независимость секций, enabled кнопки после Add.</p>
+      </div>
+    </div>
+
+    <article class="letter">
+      <h2>Обратная связь по PR #2</h2>
+      <p>Привет. Я прошёл ветку <code>feature/vapavlenko</code> против <code>master</code> и стенда
+        <a href="https://the-internet.herokuapp.com">the-internet.herokuapp.com</a>.</p>
+      <p>Задание закрыто. Page Object'ы сидят на <code>BasePage</code>, фикстуры открывают страницу так же, как в проекте.
+        По сценарию на страницу, тестов больше пяти на каждую, весь код в PR в <code>master</code>.</p>
+
+      <div class="diagram">
+        <pre class="mermaid">
+flowchart LR
+  subgraph req["Задание"]
+    A["BasePage"]
+    B["Hovers от 5"]
+    C["Dynamic Controls от 5"]
+    D["PR в master"]
+  end
+  subgraph pr["PR 2"]
+    A2["HoversPage / DynamicControlsPage"]
+    B2["6 функций, 10 тестов"]
+    C2["6 функций, 8 тестов"]
+    D2["открыт, CI зелёный"]
+  end
+  A --> A2
+  B --> B2
+  C --> C2
+  D --> D2
+  classDef ok fill:#1b5e20,stroke:#66bb6a,color:#e8f5e9
+  class A,B,C,D,A2,B2,C2,D2 ok
+        </pre>
+      </div>
+
+      <h3>Что сделано хорошо</h3>
+      <p>Фреймворк ты понял. <code>path</code> и <code>open()</code>, фикстуры сразу открывают страницу,
+        в <code>pages/</code> нет assert'ов, UI идёт через <code>expect()</code>, <code>time.sleep</code> нет,
+        <code>parametrize</code> с <code>id</code>. Это те же правила, что в
+        <code>pages/base_page.py</code> и <code>.cursor/rules/10-python-playwright.mdc</code>.</p>
+      <p>Hovers не скатился в «открыл и пошёл дальше». Есть стартовое состояние, caption спрятан до наведения,
+        текст и href после hover, чужие карточки остаются hidden, курсор уводится через
+        <code>heading.hover()</code>, переход по <code>View profile</code>.</p>
+      <p>Dynamic Controls закрывает обе секции: check и uncheck, Remove и Add с лоадером и текстами
+        <code>It's gone!</code> / <code>It's back!</code>, Enable и Disable, значение в заблокированном input не пропадает.
+        Для этой страницы это и есть суть - контролы меняются с задержкой.</p>
+      <p>По git нормально: коммиты по одной теме (<code>feat</code>, <code>test</code>, <code>docs</code>, <code>style</code>).
+        Линтер после комментария поправили, CI на HEAD зелёный.</p>
+
+      <h3>Что улучшить</h3>
+      <div class="diagram">
+        <pre class="mermaid">
+flowchart TB
+  subgraph keep["Оставить"]
+    K1["POM от BasePage"]
+    K2["expect в тестах"]
+    K3["фикстуры open()"]
+  end
+  subgraph fix["Поправить"]
+    F1["wait_for заменить на expect"]
+    F2["switch hover 0 на 1"]
+    F3["_page_from_item"]
+    F4["константы и роли"]
+  end
+  keep --> fix
+  classDef good fill:#1b5e20,stroke:#66bb6a,color:#e8f5e9
+  classDef warn fill:#e65100,stroke:#ffb74d,color:#fff3e0
+  class K1,K2,K3 good
+  class F1,F2,F3,F4 warn
+        </pre>
+      </div>
+
+      <h3>1. Dynamic Controls. Финальное состояние через <code>expect()</code>, не spinner через <code>wait_for</code></h3>
+      <p>В этом репозитории UI ждут через <code>expect()</code>: он сам повторяет проверку, пока не совпадёт.
+        <code>locator.wait_for(state="visible")</code> на <code>#loading:visible</code> обязан поймать промежуточный кадр.
+        Лоадер мелькнет быстрее таймаута - тест упадёт, хотя конечный результат верный.</p>
+      <p>Вместо такого:</p>
+      <pre><code>controls.remove_checkbox()
+controls.wait_for_checkbox_loading()
+controls.wait_for_checkbox_loading_finished()
+expect(controls.checkbox_message).to_have_text("It's gone!")</code></pre>
+      <p>лучше так:</p>
+      <pre><code>controls.remove_checkbox()
+expect(controls.checkbox_toggle_button).to_be_disabled()
+expect(controls.checkbox_loading).to_have_text("Wait for it...")
+expect(controls.checkbox).to_be_hidden()
+expect(controls.checkbox_message).to_have_text("It's gone!")
+expect(controls.checkbox_toggle_button).to_have_text("Add")
+expect(controls.checkbox_toggle_button).to_be_enabled()</code></pre>
+      <p>Локатор лучше без CSS <code>:visible</code>: <code>self.checkbox_form.locator("#loading")</code>.
+        Видимостью пусть занимается Playwright.</p>
+      <p><code>remove_checkbox</code> и <code>add_checkbox</code> оба кликают одно и то же.
+        Имена врут, если на кнопке уже Add, а вызываешь Remove. Два локатора по роли:</p>
+      <pre><code>self.remove_button = self.checkbox_form.get_by_role("button", name="Remove")
+self.add_button = self.checkbox_form.get_by_role("button", name="Add")</code></pre>
+      <p>Так же Enable и Disable. Сейчас <code>get_by_role("button")</code> без имени.
+        В форме появится вторая кнопка - сломается.</p>
+      <p>В <code>test_checkbox_can_be_added</code> после Add не видно, что кнопка снова <code>enabled</code> и лоадер исчез. Добавь.</p>
+
+      <h3>2. Hovers. «Переключение caption» никуда не переключает</h3>
+      <p><code>test_only_hovered_user_information_is_visible</code> наводит только на user1 и смотрит, что 2 и 3 скрыты.
+        В Scenario 4 ты сам написал switching. Нужен шаг: hover(0) - видно user1, hover(1) - user1 hidden, user2 visible.</p>
+      <p>Имя теста: <code>test_info_hidded_before_hover</code> поправь на <code>hidden</code>.</p>
+      <p>Тройку и строки <code>"name: user1"</code> вынеси в константы, как <code>EXPECTED_TITLE</code> в <code>tests/test_main_page.py</code>.</p>
+      <p><code>open_profile()</code> после клика оставляет тот же объект страницы.
+        В проекте навигация отдаёт POM: <code>MainPage.go_to_login_page()</code> приводит к <code>LoginPage</code>.
+        Достаточно <code>return self.page</code>, ещё лучше завести <code>UserProfilePage</code> с <code>path</code>
+        и проверкой, что <code>/users/1</code> это 404 «Not Found».
+        Проверка одного URL годится как дымовая, но стенд профиль не рисует.
+        Это расхождение - одна строка в README, по тому же принципу, что <code>/security</code> и <code>/secure</code>.</p>
+
+      <h3>3. <code>conftest.py</code>. Хук скриншотов не видит новые POM</h3>
+      <p><code>_page_from_item</code> ищет только <code>main_page</code>, <code>login_page</code>, <code>secure_page</code>.
+        Повесишь <code>@pytest.mark.critical</code> на новые тесты - Allure останется без скриншота.
+        Допиши <code>hovers_page</code> и <code>dynamic_controls_page</code> в тот же кортеж.</p>
+
+      <h3>4. Конвенции репозитория, не блокеры</h3>
+      <ul>
+        <li>Маркеры. В старых тестах есть <code>e2e</code>, у новых только <code>ui/regression/positive</code>.
+          Вешать <code>positive</code> на весь файл с Remove и disabled странно.
+          Отдельные маркеры <code>hovers</code> и <code>dynamic_controls</code> в <code>pytest.ini</code> не обязательны,
+          без них набор не вырежешь командой вроде <code>pytest -m login</code>.</li>
+        <li><code>test_enabled_text_input_accepts_value</code>: у <code>value</code> нет type hint.
+          Enable крутится три раза, примерно по 5 секунд, ради разных строк.
+          Один enable и parametrize только на fill выйдет дешевле.</li>
+        <li>Нет проверки, что disabled input не принимает ввод.
+          <code>to_be_disabled()</code> в init уже есть, добавь <code>fill</code> и ожидание ошибки или пустого значения.</li>
+        <li>Секции тоже не разведены. Remove чекбокса не должен включать input.</li>
+        <li><code>docs/test-task.md</code> это исходное ТЗ домашки.
+          Свои сценарии лучше положить отдельным файлом в <code>docs/</code> или только в README,
+          чтобы не смешивать с чужим заданием.</li>
+        <li>README не обновлён: структура, покрытие, <code>/users/N</code> отдаёт 404.</li>
+        <li>Коммит <code>style: align BasePage formatting</code> это пустая строка. К задаче не относится.</li>
+      </ul>
+
+      <h3>5. Мелочи по локаторам Hovers</h3>
+      <p><code>.figure</code> и <code>.figcaption h5</code> живут, семантики мало.
+        Внутри фигуры можно <code>get_by_role("heading")</code> - ближе к приоритету <code>get_by_role</code> из правил проекта.
+        Аватары (<code>img</code> / alt) нигде не проверяются.</p>
+
+      <h3>Что покрыто, чего не хватает</h3>
+      <p>Hovers. Есть init, hidden, hover на трёх, unhover, URL профиля.
+        Нет смены hover с 0 на 1, картинок, 404 профиля, ссылки с главной.</p>
+      <p>Dynamic Controls. Есть init, check, remove, add, enable с fill, disable с сохранением значения.
+        Нет ввода в disabled, независимости секций, enabled после Add.</p>
+
+      <h3>Что можно не трогать</h3>
+      <p>Прямой <code>HoversPage.open()</code>, а не клик с главной - так же сделаны <code>login_page</code> и <code>secure_page</code>.
+        Для этой задачи хватает. Тест «ссылка Hovers есть в каталоге» был бы бонусом, не требованием.</p>
+      <p>Пункты 1-3 я бы попросил дописать: там стабильность и привычки этого репозитория.
+        Остальное можно оставить на второй заход. После 1-3 я бы спокойно вливал в master.</p>
+    </article>
+  </div>
+
+  <script type="module">
+    import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: "base",
+      securityLevel: "loose",
+      themeVariables: {
+        fontFamily: "ui-sans-serif, system-ui, sans-serif",
+        primaryColor: "#e8f5e9",
+        primaryTextColor: "#e8f5e9",
+        lineColor: "#5c564c",
+        clusterBkg: "#fffdf8",
+        clusterBorder: "#e4ddd1"
+      }
+    });
+  </script>
+</body>
+</html>
